@@ -72,6 +72,7 @@
                       v-img.align-end(
                         :src="member.image"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                        transition="scale-transition"
                         )
                         .pa-3.white--text.text-h6.font-weight-medium.break-word {{ member.name }}
       v-dialog(v-model="dialog.find" max-width="1000")
