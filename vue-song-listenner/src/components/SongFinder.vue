@@ -80,7 +80,7 @@ div
             )
               b(
                 style="font-size: 17px; font-weight: 700; color: rgba(0, 0, 0, 0.3)"
-              ) Salvando usuários...
+              ) Identificando música...
         v-row(
           v-else
           no-gutters
@@ -116,14 +116,14 @@ div
   v-row.pa-0(justify="space-between")
     v-col(cols="auto")
       v-btn(
-        v-if="stepper < 3"
+        v-if="stepper < 2"
         text
         @click="prevBtn"
       ) {{ stepper > 1 ? 'Voltar' : 'Cancelar' }}
     v-col(cols="auto")
       v-btn(
         color="primary"
-        :disabled="!finishedLoading || flags.saving"
+        :disabled="!finishedLoading || flags.saving || importError"
         @click="nextBtn"
       ) {{ stepper !== 3 ? 'Próximo' : 'OK' }}
 </template>
@@ -279,7 +279,9 @@ export default {
     },
     async fileAdded(file) {
       console.log('File Dropped => ', file)
-      if (file.name.split('.')[1] === 'mp3') {
+      console.log(file.name)
+      console.log(file.name.split('.')[file.name.split('.').length - 1])
+      if (file.name.split('.')[file.name.split('.').length - 1]) {
         this.fileInfo = {
           name: file.name,
           size: file.size

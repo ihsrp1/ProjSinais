@@ -49,7 +49,7 @@
                       gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                       )
                       .pa-3.text-h6.font-weight-medium.break-word {{ song.name }}
-      v-dialog(v-model="dialog.aboutUs" max-width="800")
+      v-dialog(v-model="dialog.aboutUs" :scrollable="true" max-width="800")
         v-card.px-2.px-md-3.py-3.py-md-4
           v-toolbar.toolbar-settings.text-settings
             h6.text-h6.font-weight-medium.break-word Membros
@@ -75,7 +75,7 @@
                         transition="scale-transition"
                         )
                         .pa-3.white--text.text-h6.font-weight-medium.break-word {{ member.name }}
-      v-dialog(v-model="dialog.find" max-width="1000")
+      v-dialog(v-model="dialog.find" :scrollable="true" max-width="1000")
         v-card.px-2.px-md-3.py-3.py-md-4
           v-toolbar.toolbar-settings.text-settings
             h6.text-h6.font-weight-medium.break-word Achar música
@@ -91,7 +91,7 @@
             v-icon mdi-close
           VuePerfectScrollbar
             v-card-text.text-md-left
-              SongFinder(:visible="dialog.find")
+              SongFinder(:visible="dialog.find" @close="dialog.find = false")
     v-footer(dark padless)
       v-card.indigo.darken-4.white--text.text-center(flat tile style="width: 100%")
         v-card-text
@@ -240,7 +240,7 @@ export default {
   background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
   background-size: 400%;
   border-radius: 30px;
-  z-index: 5;
+  z-index: 4;
   opacity: 1;
   transition: 0.5s;
 }
