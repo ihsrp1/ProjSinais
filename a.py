@@ -26,7 +26,7 @@ def generate_fingerprint(samplerate, channels, pcmiter, maxlength=MAX_AUDIO_LENG
 
     return fper.finish()
   except chromaprint.FingerprintError:
-    print('fodeu')
+    print('Deu ruim')
 
 def findMusic(musicPath):
   print(musicPath)
@@ -47,16 +47,14 @@ def findMusic(musicPath):
     song_name = first_result['title']
     artist_name = first_result['artists'][0]['name']
     if first_result and song_name and artist_name:
-      print('{} - {}'.format(song_name, artist_name))
       result = wikipedia.page(artist_name + ' artist')
       wikiContent = result.content
-      print(result.content)
       lyrics_query = LYRICS_URL + '/' + artist_name + '/' + song_name
       res = requests.get(lyrics_query)
       lyrics = res.json()['lyrics']
-      print(res.json()['lyrics'])
       found = True
     i+=1
-  return { wikiContent, lyrics }
+  finalResult = (song_name, artist_name, wikiContent, lyrics)
+  return finalResult
 
     

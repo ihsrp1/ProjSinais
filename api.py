@@ -4,6 +4,7 @@ app = Flask(__name__)
 import json
 from flask_cors import CORS #include this line
 from a import findMusic
+import sys
 CORS(app) 
 
 @app.route('/sendMusic',methods=['POST'])
@@ -14,7 +15,14 @@ def createTask():
     path = os.path.join('musics', audio.filename)
     audio.save(path)
     musicInfo = findMusic(path)
-    return musicInfo
+    returnString = '{}*{}*{}*{}' .format(musicInfo[0], musicInfo[1],musicInfo[2], musicInfo[3])
+    
+ 
+    with open("randomfile.txt", "a") as o:
+        o.write(returnString)
+    # result = returnString.split("*")
+    # print (result[0])
+    return returnString
 
 
 if __name__ == "__main__":
