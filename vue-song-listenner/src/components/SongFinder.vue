@@ -132,6 +132,7 @@ div
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import FakeCircularLoader from '@/components/utils/FakeCircularLoader'
+import axios from 'axios'
 
 const initialData = function () {
   return {
@@ -147,6 +148,7 @@ const initialData = function () {
     importError: null,
     anmtImgClass: 'size-hidden',
     anmtTxtClass: 'opacity-hidden',
+    apiResult: `Thriller*Michael Jackson*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.*It's close to midnight\nAnd something evil's lurking in the dark\nUnder the moonlight\nYou see a sight that almost stops your heart\nYou try to scream\nBut terror takes the sound before you make it\nYou start to freeze\nAs horror looks you right between the eyes\nYou're paralyzed\n'Cause this is thriller, thriller night\nAnd no one's gonna save you from the beast about to strike\nYou know it's thriller, thriller night\nYou're fighting for your life inside a killer thriller tonight, yeah\nOh oh oh\nYou hear the door slam\nAnd realize there's nowhere left to run\nYou feel the cold hand\nAnd wonder if you'll ever see the sun\nYou close your eyes\nAnd hope that this is just imagination\nGirl, but all the while\nYou hear the creature creepin' up behind\nYou're out of time\n'Cause this is thriller, thriller night\nThere ain't no second chance against the thing with forty eyes, girl\nThriller, thriller night\nYou're fighting for your life inside a killer thriller tonight\nNight creatures call\n`
   }
 }
 export default {
@@ -251,22 +253,21 @@ export default {
           this.stepper--
       }
     },
-    nextBtn() {
+    async nextBtn() {
       switch (this.stepper) {
         case 1:
           this.stepper++
           this.flags.saving = true
-          setTimeout(async () => {
-            try {
-              // api
-              this.importError = null
-            } catch (error) {
-              this.importError = error
-              console.error(error)
-            } finally {
-              this.flags.saving = false
-            }
-          }, 1500)
+          try {
+            // api
+            this.apiResult = await axios.post('/sendMusic', this.form.file)
+            this.importError = null
+          } catch (error) {
+            this.importError = error
+            console.error(error)
+          } finally {
+            this.flags.saving = false
+          }
           break
         case 2:
           this.stepper++
