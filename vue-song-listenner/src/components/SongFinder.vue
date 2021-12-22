@@ -1,12 +1,12 @@
 <template lang="pug">
 div
   v-stepper.mx-n4.mx-md-n4(
-    v-model="stepper"
-    alt-labels
+    v-model="stepper",
+    alt-labels,
     style="box-shadow: none"
   )
     v-stepper-header
-      v-stepper-step(step="1" :complete="stepper > 1")
+      v-stepper-step(step="1", :complete="stepper > 1")
         | Importar áudio
       v-divider
       v-stepper-step(step="2")
@@ -17,11 +17,11 @@ div
     v-stepper-items
       v-stepper-content(step="1")
         dropzone#dropzone(
-          ref="myVueDropzone"
-          style="width: 100%"
-          :include-styling="false"
-          :useCustomSlot="true"
-          :options="dropzoneOptions"
+          ref="myVueDropzone",
+          style="width: 100%",
+          :include-styling="false",
+          :useCustomSlot="true",
+          :options="dropzoneOptions",
           @vdropzone-file-added="fileAdded"
         )
           .dropzone-container
@@ -31,23 +31,18 @@ div
               | Arraste/Solte sua música ou áudio .MP3 aqui 🤘
               p.separator
                 span ou
-              v-btn.text-none(
-                color="#D500F9"
-                dark
-                small
-                depressed
-              ) Procurar...
+              v-btn.text-none(color="#D500F9", dark, small, depressed) Procurar...
             template(v-else)
               div(
                 style="position: relative; border-radius: 15px; background-color: #f9f9f9; width: 100%; display: flex; flex-wrap: wrap"
               )
                 v-row(
-                  no-gutters="no-gutters"
+                  no-gutters="no-gutters",
                   style="padding: 30px; justify-content: center"
                 )
                   v-col(cols="auto")
                     FakeCircularLoader(
-                      :autostart="true"
+                      :autostart="true",
                       @update="finishedLoading = $event"
                     )
                     .titleLabel.colorDark(
@@ -60,59 +55,67 @@ div
                     )
                       | {{ fileInfoText }}
                 v-btn(
-                  v-if="fileInfo"
-                  icon
-                  style="position: absolute; top: 0; right: 0"
+                  v-if="fileInfo",
+                  icon,
+                  style="position: absolute; top: 0; right: 0",
                   @click="removeFile"
                 )
                   v-icon mdi-close
       v-stepper-content(step="2")
         v-row(
-          v-if="flags.saving"
+          v-if="flags.saving",
           style="height: 100%; justify-content: center; align-items: center"
         )
           v-col(cols="auto")
             v-progress-circular(
-              color="rgba(200, 200, 200, 0.7)"
-              size="250"
-              indeterminate
+              color="rgba(200, 200, 200, 0.7)",
+              size="250",
+              indeterminate,
               width="6"
             )
               b(
                 style="font-size: 17px; font-weight: 700; color: rgba(0, 0, 0, 0.3)"
               ) Identificando música...
         v-row(
-          v-else
-          no-gutters
+          v-else,
+          no-gutters,
           style="padding: 0; height: 100%; justify-content: center; align-items: center"
         )
           v-col(cols="auto")
             template(v-if="!importError")
               img(
-                src="../assets/check-underline-circle.png"
-                style="height: 256px; width: 256px; display: block; transition: 0.5s; margin: auto"
+                src="../assets/check-underline-circle.png",
+                style="height: 256px; width: 256px; display: block; transition: 0.5s; margin: auto",
                 :class="anmtImgClass"
               )
               .titleLabel.colorDark(
-                style="text-align: center; transition: 0.2s"
+                style="text-align: center; transition: 0.2s",
                 :class="anmtTxtClass"
               ) Concluído!
             template(v-else)
               img(
-                src="../assets/close-circle.png"
-                style="height: 256px; width: 256px; display: block; transition: 0.5s; margin: auto"
+                src="../assets/close-circle.png",
+                style="height: 256px; width: 256px; display: block; transition: 0.5s; margin: auto",
                 :class="anmtImgClass"
               )
               .titleLabel.colorDark(
-                style="text-align: center; transition: 0.2s"
+                style="text-align: center; transition: 0.2s",
                 :class="anmtTxtClass"
               ) Erro!
               .titleLabel.colorDark(
-                style="text-align: center; transition: 0.2s"
+                style="text-align: center; transition: 0.2s",
                 :class="anmtTxtClass"
               ) {{ importError.message }}
       v-stepper-content(step="3")
-        | a
+        v-container 
+          v-row 
+            v-col(cols="6")
+              .text-h4 {{ nomeDaMusica }}
+              .text-subtitle-1.text--secondary {{ nomeDoArtista }}
+              .text-h5 Letra
+              .text-caption(style="white-space: pre-line") {{ letraDaMusica.split('\n').slice(1).join('\n') }}
+            v-col(cols="6")
+              img(v-if="foto != ''" :src="foto" height="300px" width="300px")
   v-row.pa-0(justify="space-between")
     v-col(cols="auto")
       v-btn(
@@ -129,40 +132,53 @@ div
 </template>
 
 <script>
-import vue2Dropzone from 'vue2-dropzone'
-import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-import FakeCircularLoader from '@/components/utils/FakeCircularLoader'
-import axios from 'axios'
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import FakeCircularLoader from "@/components/utils/FakeCircularLoader";
+import axios from "axios";
+const SerpApi = require("google-search-results-nodejs");
+const search = new SerpApi.GoogleSearch(
+  "4762345cdde17ccc19ffa060c0083f8a2d25aa46aced0407f6d2a713675541f4"
+);
+axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+// Show result as JSON
 
 const initialData = function () {
   return {
     stepper: 1,
     form: {
       mp3: null,
-      file: null
+      file: null,
     },
     flags: {
       saving: false,
-      fileAdded: false
+      fileAdded: false,
     },
     importError: null,
-    anmtImgClass: 'size-hidden',
-    anmtTxtClass: 'opacity-hidden',
-    apiResult: `Thriller*Michael Jackson*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.*It's close to midnight\nAnd something evil's lurking in the dark\nUnder the moonlight\nYou see a sight that almost stops your heart\nYou try to scream\nBut terror takes the sound before you make it\nYou start to freeze\nAs horror looks you right between the eyes\nYou're paralyzed\n'Cause this is thriller, thriller night\nAnd no one's gonna save you from the beast about to strike\nYou know it's thriller, thriller night\nYou're fighting for your life inside a killer thriller tonight, yeah\nOh oh oh\nYou hear the door slam\nAnd realize there's nowhere left to run\nYou feel the cold hand\nAnd wonder if you'll ever see the sun\nYou close your eyes\nAnd hope that this is just imagination\nGirl, but all the while\nYou hear the creature creepin' up behind\nYou're out of time\n'Cause this is thriller, thriller night\nThere ain't no second chance against the thing with forty eyes, girl\nThriller, thriller night\nYou're fighting for your life inside a killer thriller tonight\nNight creatures call\n`
-  }
-}
+    anmtImgClass: "size-hidden",
+    anmtTxtClass: "opacity-hidden",
+    apiResult: "",
+    letraDaMusica: "",
+    wikiContent: "",
+    nomeDaMusica: "",
+    nomeDoArtista: "",
+    search,
+    foto: ""
+  };
+};
 export default {
   components: {
     dropzone: vue2Dropzone,
     FakeCircularLoader,
   },
-  props: ['visible', 'bus'],
+  props: ["visible", "bus"],
   watch: {
     visible(visible) {
       if (!visible) {
         setTimeout(() => {
-          this.clear()
-        }, 500)
+          this.clear();
+        }, 500);
       }
     },
     // stepper(nV) {
@@ -176,40 +192,40 @@ export default {
     //     }
     //   } else this.$emit('change-max-width', 800)
     // },
-    'flags.saving'(nV) {
-      console.log('aaaaaa')
+    "flags.saving"(nV) {
+      console.log("aaaaaa");
       if (!nV) {
         setTimeout(() => {
-          this.anmtImgClass = 'size-110'
+          this.anmtImgClass = "size-110";
           setTimeout(() => {
-            this.anmtImgClass = 'size-100'
-            this.anmtTxtClass = 'opacity-100'
+            this.anmtImgClass = "size-100";
+            this.anmtTxtClass = "opacity-100";
             // console.log('tamanho 100')
-          }, 500)
+          }, 500);
           // console.log('tamanho 110')
-        }, 200)
+        }, 200);
       }
-    }
+    },
   },
   computed: {
     progressText() {
-      if (!this.fileInfo) return ''
+      if (!this.fileInfo) return "";
       if (this.finishedLoading) {
-        return 'Finalizado!'
+        return "Finalizado!";
       } else {
-        return 'Carregando arquivo...'
+        return "Carregando arquivo...";
       }
     },
     fileInfoText() {
-      if (!this.fileInfo) return ''
+      if (!this.fileInfo) return "";
 
-      const i = Math.floor(Math.log(this.fileInfo.size) / Math.log(1024))
+      const i = Math.floor(Math.log(this.fileInfo.size) / Math.log(1024));
       const sizeText =
         (this.fileInfo.size / Math.pow(1024, i)).toFixed(2) * 1 +
-        ' ' +
-        ['B', 'kB', 'MB', 'GB', 'TB'][i]
-      return `${this.fileInfo.name}(${sizeText})`
-    }
+        " " +
+        ["B", "kB", "MB", "GB", "TB"][i];
+      return `${this.fileInfo.name}(${sizeText})`;
+    },
   },
   data() {
     return {
@@ -217,65 +233,109 @@ export default {
         autoProcessQueue: false,
         url: `fakeurl`,
         headers: {
-          Authorization: `Access Token`
+          Authorization: `Access Token`,
         },
         paramName: function () {
-          return 'file[]'
+          return "file[]";
         },
         includeStyling: false,
         previewsContainer: false,
         thumbnailWidth: 250,
         thumbnailHeight: 140,
         uploadMultiple: false,
-        acceptedFiles: '.mp3',
-        parallelUploads: 1
+        acceptedFiles: ".mp3",
+        parallelUploads: 1,
       },
       fileInfo: null,
       finishedLoading: false,
-      ...initialData()
-    }
+      ...initialData(),
+    };
+  },
+  async mounted() {
+    // const queryResult = await this.getArtistPic("Dire Straits");
+    // console.log(queryResult);
   },
   methods: {
     clear() {
-      Object.assign(this.$data, initialData())
-      this.user = null
-      this.$refs.myVueDropzone.removeAllFiles()
+      Object.assign(this.$data, initialData());
+      this.user = null;
+      this.$refs.myVueDropzone.removeAllFiles();
+    },
+    url_img(nome) {
+      const url = this.getArtistPic(nome)
+      return url
     },
     prevBtn() {
       switch (this.stepper) {
         case 1:
-          this.$emit('close')
-          break
+          this.$emit("close");
+          break;
         case 2:
-          this.stepper--
-          break
+          this.stepper--;
+          break;
         default:
-          this.stepper--
+          this.stepper--;
       }
     },
     async nextBtn() {
       switch (this.stepper) {
         case 1:
-          this.stepper++
-          this.flags.saving = true
+          this.stepper++;
+          this.flags.saving = true;
           try {
             // api
-            this.apiResult = await axios.post('/sendMusic', this.form.file)
-            this.importError = null
+            var formData = new FormData();
+            formData.append("audio", this.form.file);
+
+            this.apiResult = await axios.post(
+              "http://127.0.0.1:5000/sendMusic",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            this.importError = null;
+            console.log(this.apiResult);
+            this.nomeDaMusica = this.apiResult.data.split("*")[0];
+            this.nomeDoArtista = this.apiResult.data.split("*")[1];
+            this.wikiContent = this.apiResult.data.split("*")[2];
+            this.letraDaMusica = this.apiResult.data.split("*")[3];
+            this.foto = await this.getArtistPic(this.nomeDoArtista);
+            console.log('fotooo', this.foto)
           } catch (error) {
-            this.importError = error
-            console.error(error)
+            this.importError = error;
+            console.error(error);
           } finally {
-            this.flags.saving = false
+            this.flags.saving = false;
           }
-          break
+          break;
         case 2:
-          this.stepper++
-          break
+          this.stepper++;
+          break;
         default:
-          this.$emit('close')
-          break
+          this.$emit("close");
+          break;
       }
+    },
+    async getArtistPic(artistName) {
+      console.log("oi")      
+      const query = artistName.split(" ").join("+").toLowerCase().trim();
+      console.log(query)
+      const result = await axios.get(
+        `https://cors-anywhere.herokuapp.com/https://serpapi.com/search.json?engine=google&q=${query}&google_domain=google.com&tbm=isch&ijn=0&api_key=4762345cdde17ccc19ffa060c0083f8a2d25aa46aced0407f6d2a713675541f4`,
+        {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        }
+      )
+      
+      console.log(result.data.images_results[1].original);
+      console.log(result)
+      return result.data.images_results[1].original;
+      
     },
     async fileAdded(file) {
       console.log('File Dropped => ', file)
@@ -284,30 +344,30 @@ export default {
       if (file.name.split('.')[file.name.split('.').length - 1]) {
         this.fileInfo = {
           name: file.name,
-          size: file.size
-        }
-        const reader = new FileReader()
+          size: file.size,
+        };
+        const reader = new FileReader();
         const readMP3Promise = new Promise((resolve) => {
-          reader.onload = (evt) => resolve(evt.target.result)
-        })
-        reader.readAsText(file)
-        this.form.mp3 = await readMP3Promise
-        this.form.file = file
-        this.flags.fileAdded = true
+          reader.onload = (evt) => resolve(evt.target.result);
+        });
+        reader.readAsText(file);
+        this.form.mp3 = await readMP3Promise;
+        this.form.file = file;
+        this.flags.fileAdded = true;
       } else {
         // TODO
-        alert('Tipo inválido de arquivo.')
+        alert("Tipo inválido de arquivo.");
       }
     },
     removeFile(event) {
-      event.stopPropagation()
-      this.finishedLoading = false
-      this.form.mp3 = null
-      this.form.file = null
-      this.fileInfo = null
+      event.stopPropagation();
+      this.finishedLoading = false;
+      this.form.mp3 = null;
+      this.form.file = null;
+      this.fileInfo = null;
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -352,7 +412,7 @@ h2 {
 }
 .separator:after {
   position: absolute;
-  content: '';
+  content: "";
   height: 1px;
   width: 200px;
   background: #d8d8d8;

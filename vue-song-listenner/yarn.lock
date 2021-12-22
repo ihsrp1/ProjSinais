@@ -4293,6 +4293,14 @@
     "pify" "^4.0.1"
     "slash" "^2.0.0"
 
+<<<<<<< HEAD
+=======
+"google-search-results-nodejs@^2.0.1":
+  "integrity" "sha512-DfiqawBwliUfdy//OUtbIxaU2r7f2frwbCedr6GLZoP5ucZKFiSDvmb1xyXRng744ElHpeSxmhnwDTwVQTk5zw=="
+  "resolved" "https://registry.npmjs.org/google-search-results-nodejs/-/google-search-results-nodejs-2.0.1.tgz"
+  "version" "2.0.1"
+
+>>>>>>> Guedes: add noise filter
 "graceful-fs@^4.1.11", "graceful-fs@^4.1.15", "graceful-fs@^4.1.2", "graceful-fs@^4.1.6":
   "integrity" "sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg=="
   "resolved" "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.8.tgz"
@@ -5941,7 +5949,11 @@
   "resolved" "https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.9.0.tgz"
   "version" "0.9.0"
 
+<<<<<<< HEAD
 "object-assign@^4.0.1", "object-assign@^4.1.0", "object-assign@^4.1.1":
+=======
+"object-assign@^4", "object-assign@^4.0.1", "object-assign@^4.1.0", "object-assign@^4.1.1":
+>>>>>>> Guedes: add noise filter
   "integrity" "sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM="
   "resolved" "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz"
   "version" "4.1.1"
@@ -8549,7 +8561,11 @@
     "spdx-correct" "^3.0.0"
     "spdx-expression-parse" "^3.0.0"
 
+<<<<<<< HEAD
 "vary@~1.1.2":
+=======
+"vary@^1", "vary@~1.1.2":
+>>>>>>> Guedes: add noise filter
   "integrity" "sha1-IpnwLG3tMNSllhsLn3RSShj2NPw="
   "resolved" "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   "version" "1.1.2"
